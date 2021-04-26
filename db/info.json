@@ -1,0 +1,30 @@
+{
+    "matthieu": {
+        "firstname": "Matthieu",
+        "lastname": "Gris",
+        "email": "thegrey@oizaefo.com",
+        "number": "065460234",
+        "birthday": "1995-02-19"
+    },
+    "jarod": {
+        "firstname": "Jarod",
+        "lastname": "Acloque",
+        "email": "jaja@lataupe",
+        "number": "065460234",
+        "birthday": "1998-02-21"
+    },
+    "steve": {
+        "firstname": "Steve",
+        "lastname": "Strazzeri",
+        "email": "pro.stevestrz@gmail.com",
+        "number": "0617601090",
+        "birthday": "2000-10-31"
+    },
+    "dylan": {
+        "firstname": "Dylan",
+        "lastname": "Lafaire",
+        "email": "dylan.lafaire.ts2@gmail.com",
+        "number": "0770107585",
+        "birthday": "2000-02-26"
+    }
+}
