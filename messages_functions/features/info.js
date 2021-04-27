@@ -1,6 +1,6 @@
 const JSONdb = require('simple-json-db');
 const db = new JSONdb('./db/info.json');
-const moment = require('moment';
+const moment = require('moment');
 moment.locale('fr');
 
 const info = (message) => {
