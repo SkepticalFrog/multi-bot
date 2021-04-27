@@ -22,28 +22,28 @@ const info = (message) => {
       if (!args[1]) {
         message.reply(
           'Les commandes pour `$info` sont : ' +
-          '\n\t- `$info all`' +
-          '\n\t- `$info add [args]`' +
-          '\n\t- `$info edit [args]`' +
-          '\n\t- `$info delete username`' +
-          '\n\t- `$info username`'
+            '\n\t- `$info all`' +
+            '\n\t- `$info add [args]`' +
+            '\n\t- `$info edit [args]`' +
+            '\n\t- `$info delete username`' +
+            '\n\t- `$info username`'
         );
       } else {
         const id = args[1].replace(/[<@!>]/gi, '');
-        console.log(`id`, id)
+        console.log(`id`, id);
         const user = db.get(id);
         if (user) {
           message.reply(
             'Moui... on parle de ' +
-            user.firstname +
-            ' ' +
-            user.lastname +
-            ' : ' +
-            user.email +
-            ', ' +
-            user.number +
-            ' né le ' +
-            moment(user.birthday).format('dddd D MMMM YYYY')
+              user.firstname +
+              ' ' +
+              user.lastname +
+              ' : ' +
+              user.email +
+              ', ' +
+              user.number +
+              ' né le ' +
+              moment(user.birthday).format('dddd D MMMM YYYY')
           );
         } else {
           message.reply('Inconnu au bataillon.');
@@ -54,14 +54,15 @@ const info = (message) => {
 
 const addInfo = (message) => {
   const args = message.content.split(' ');
-  const id = args[2].replace(/[!<>@]/gi, '');
-  if (args[2] && db.get(id)) {
-    console.log(`Exists already.`);
-    message.reply(
-      'Cet utilisateur est déjà enregistré. Utilise la commande `edit` pour le modifier.'
-    );
-  } else {
-    if (args.length === 7) {
+
+  if (args.length === 7) {
+    const id = args[2].replace(/[!<>@]/gi, '');
+    if (db.get(id)) {
+      console.log(`Exists already.`);
+      message.reply(
+        'Cet utilisateur est déjà enregistré. Utilise la commande `edit` pour le modifier.'
+      );
+    } else {
       const user = {
         lastname: args[2],
         firstname: args[3],
@@ -72,11 +73,12 @@ const addInfo = (message) => {
       db.set(message.author.id.toString().toLowerCase(), user);
 
       message.reply("L'utilisateur <@" + id + '> a bien été ajouté !');
-    } else {
-      message.reply(
-        'La syntaxe pour la commande `add` est :\n`$info add lastname firstname email phone_number birthdate(format YYYY-MM-DD)`'
-      );
+      return;
     }
+  } else {
+    message.reply(
+      'La syntaxe pour la commande `add` est :\n`$info add lastname firstname email phone_number birthdate(format YYYY-MM-DD)`'
+    );
   }
 };
 
@@ -101,8 +103,8 @@ const allInfo = (message) => {
     return str;
   }, 'Voici la liste des utilisateurs enregistrés :');
 
-  message.reply(reply).then(m => {
-    m.edit(m.content.replace(/\(</gi, '(<@'))
+  message.reply(reply).then((m) => {
+    m.edit(m.content.replace(/\(</gi, '(<@'));
   });
 };
 
@@ -113,11 +115,11 @@ const editInfo = (message) => {
       'La syntaxe pour la commande `edit` est :\n`$info edit @username parametre=nouvelle_valeur`'
     );
   } else {
-    const id = args[2].replace(/[@<>!]/gi, '')
+    const id = args[2].replace(/[@<>!]/gi, '');
     const user = db.get(id);
     if (!user) {
-      message.reply('L\'utilisateur n\'est pas enregistré.')
-      return
+      message.reply("L'utilisateur n'est pas enregistré.");
+      return;
     }
     const keys = Object.keys(user);
     args.slice(3).map((curr) => {
@@ -128,10 +130,9 @@ const editInfo = (message) => {
       }
     });
 
-
     db.set(args[2].toString().toLowerCase(), user);
-    message.reply("L'utilisateur <" + id + '> a été mis à jour.').then(m => {
-      m.edit(m.content.replace(/</g, '<@'))
+    message.reply("L'utilisateur <" + id + '> a été mis à jour.').then((m) => {
+      m.edit(m.content.replace(/</g, '<@'));
     });
   }
 };
@@ -154,8 +155,8 @@ const deleteInfo = (message) => {
         .then((collected) => {
           if (collected.first().content.match(/oui/gi)) {
             db.delete(id);
-            message.reply(`Utilisateur <${id}> supprimé...`).then(m => {
-              m.edit(m.content.replace(/</g, '<@'))
+            message.reply(`Utilisateur <${id}> supprimé...`).then((m) => {
+              m.edit(m.content.replace(/</g, '<@'));
             });
           } else message.reply('Operation annulée.');
         })
