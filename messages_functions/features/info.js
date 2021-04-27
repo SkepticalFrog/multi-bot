@@ -1,6 +1,6 @@
 const JSONdb = require('simple-json-db');
 const db = new JSONdb('./db/info.json');
-const moment = require('moment');
+const moment = require('moment';
 moment.locale('fr');
 
 const info = (message) => {
@@ -70,10 +70,9 @@ const addInfo = (message) => {
         number: args[5],
         birthday: args[6],
       };
-      db.set(message.author.id.toString().toLowerCase(), user);
+      db.set(id, user);
 
-      message.reply("L'utilisateur <@" + id + '> a bien été ajouté !');
-      return;
+      message.channel.send("L'utilisateur <@" + id + '> a bien été ajouté !');
     }
   } else {
     message.reply(
