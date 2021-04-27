@@ -22,26 +22,28 @@ const info = (message) => {
       if (!args[1]) {
         message.reply(
           'Les commandes pour `$info` sont : ' +
-            '\n\t- `$info all`' +
-            '\n\t- `$info add [args]`' +
-            '\n\t- `$info edit [args]`' +
-            '\n\t- `$info delete username`' +
-            '\n\t- `$info username`'
+          '\n\t- `$info all`' +
+          '\n\t- `$info add [args]`' +
+          '\n\t- `$info edit [args]`' +
+          '\n\t- `$info delete username`' +
+          '\n\t- `$info username`'
         );
       } else {
-        const user = db.get(args[1].toString().toLowerCase());
+        const id = args[1].replace(/[<@!>]/gi, '');
+        console.log(`id`, id)
+        const user = db.get(id);
         if (user) {
           message.reply(
             'Moui... on parle de ' +
-              user.firstname +
-              ' ' +
-              user.lastname +
-              ' : ' +
-              user.email +
-              ', ' +
-              user.number +
-              ' né le ' +
-              moment(user.birthday).format('dddd D MMMM YYYY')
+            user.firstname +
+            ' ' +
+            user.lastname +
+            ' : ' +
+            user.email +
+            ', ' +
+            user.number +
+            ' né le ' +
+            moment(user.birthday).format('dddd D MMMM YYYY')
           );
         } else {
           message.reply('Inconnu au bataillon.');
@@ -52,26 +54,27 @@ const info = (message) => {
 
 const addInfo = (message) => {
   const args = message.content.split(' ');
-  if (args[2] && db.get(args[2])) {
+  const id = args[2].replace(/[!<>@]/gi, '');
+  if (args[2] && db.get(id)) {
     console.log(`Exists already.`);
     message.reply(
       'Cet utilisateur est déjà enregistré. Utilise la commande `edit` pour le modifier.'
     );
   } else {
-    if (args.length === 8) {
+    if (args.length === 7) {
       const user = {
-        lastname: args[3],
-        firstname: args[4],
-        email: args[5],
-        number: args[6],
-        birthday: args[7],
+        lastname: args[2],
+        firstname: args[3],
+        email: args[4],
+        number: args[5],
+        birthday: args[6],
       };
-      db.set(args[2].toString().toLowerCase(), user);
+      db.set(message.author.id.toString().toLowerCase(), user);
 
-      message.reply("L'utilisateur " + args[2] + ' a bien été ajouté !');
+      message.reply("L'utilisateur <@" + id + '> a bien été ajouté !');
     } else {
       message.reply(
-        'La syntaxe pour la commande `add` est :\n`$info add username lastname name email phone_number birthdate(format YYYY-MM-DD)`'
+        'La syntaxe pour la commande `add` est :\n`$info add lastname firstname email phone_number birthdate(format YYYY-MM-DD)`'
       );
     }
   }
@@ -92,23 +95,30 @@ const allInfo = (message) => {
       user.number +
       ' né le ' +
       moment(user.birthday).format('dddd D MMMM YYYY') +
-      ' (' +
+      ' (<' +
       curr +
-      ')';
+      '>)';
     return str;
   }, 'Voici la liste des utilisateurs enregistrés :');
 
-  message.reply(reply);
+  message.reply(reply).then(m => {
+    m.edit(m.content.replace(/\(</gi, '(<@'))
+  });
 };
 
 const editInfo = (message) => {
   const args = message.content.split(' ');
   if (args.length < 4) {
     message.reply(
-      'La syntaxe pour la commande `edit` est :\n`$info edit username parametre=nouvelle_valeur`'
+      'La syntaxe pour la commande `edit` est :\n`$info edit @username parametre=nouvelle_valeur`'
     );
   } else {
-    const user = db.get(args[2]);
+    const id = args[2].replace(/[@<>!]/gi, '')
+    const user = db.get(id);
+    if (!user) {
+      message.reply('L\'utilisateur n\'est pas enregistré.')
+      return
+    }
     const keys = Object.keys(user);
     args.slice(3).map((curr) => {
       const param1 = curr.split('=')[0];
@@ -118,15 +128,19 @@ const editInfo = (message) => {
       }
     });
 
+
     db.set(args[2].toString().toLowerCase(), user);
-    message.reply("L'utilisateur " + args[2] + ' a été mis à jour.');
+    message.reply("L'utilisateur <" + id + '> a été mis à jour.').then(m => {
+      m.edit(m.content.replace(/</g, '<@'))
+    });
   }
 };
 
 const deleteInfo = (message) => {
   const args = message.content.split(' ');
   if (args.length === 3) {
-    const user = db.get(args[2]);
+    const id = args[2].replace(/[!@<>]/gi, '');
+    const user = db.get(id);
     if (user) {
       message.reply(
         'Es-tu sûr de vouloir supprimer cet utilisateur ? (oui/non)'
@@ -138,9 +152,11 @@ const deleteInfo = (message) => {
           time: 30000,
         })
         .then((collected) => {
-          if (collected.first().content.toLowerCase() == 'oui') {
-            db.delete(args[2]);
-            message.reply(`Utilisateur ${args[2]} supprimé...`);
+          if (collected.first().content.match(/oui/gi)) {
+            db.delete(id);
+            message.reply(`Utilisateur <${id}> supprimé...`).then(m => {
+              m.edit(m.content.replace(/</g, '<@'))
+            });
           } else message.reply('Operation annulée.');
         })
         .catch(() => {
@@ -151,7 +167,7 @@ const deleteInfo = (message) => {
     }
   } else {
     message.reply(
-      'La syntaxe pour la commande `delete` est :\n`$info delete username`'
+      'La syntaxe pour la commande `delete` est :\n`$info delete @username`'
     );
   }
 };

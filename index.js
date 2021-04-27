@@ -20,7 +20,8 @@ client.on('ready', async () => {
 
 // Create an event listener for messages
 client.on('message', message => {
-  handleMessage(message);
+  if (message.author !== client.user)
+    handleMessage(message);
 });
 
 client.login(authToken);

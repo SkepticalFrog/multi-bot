@@ -8,8 +8,12 @@ const handleMessage = (message) => {
     message.reply("Parce qu'on se les fait pas piquer !!");
   }
 
-  if (message.content.toLowerCase() === 'ping') {
+  if (message.content.match(/ping/gi)) {
     message.channel.send('pong, mothafucka!');
+  }
+
+  if (message.content.match(/elon/gi)) {
+    message.channel.send('Et Elon Musk a vécu un an avec uniquement 1$ par jour pour vivre. UN SEUL DOLLAR !! Quel boss.')
   }
 
   if (command[0] === '$') {
