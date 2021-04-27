@@ -3,10 +3,6 @@
 const { authToken } = require('./utils/default.js');
 const handleMessage = require('./messages_functions/handleMessage');
 
-/**
- * A ping pong bot, whenever you send "ping", it replies "pong".
- */
-
 // Import the discord.js module
 const Discord = require('discord.js');
 
@@ -19,7 +15,7 @@ const client = new Discord.Client();
  * received from Discord
  */
 client.on('ready', async () => {
-  console.log('I am ready!');
+  console.log('Connected and ready...');
 });
 
 // Create an event listener for messages
@@ -27,6 +23,4 @@ client.on('message', message => {
   handleMessage(message);
 });
 
-
-// Log our bot in using the token from https://discord.com/developers/applications
 client.login(authToken);

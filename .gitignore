@@ -103,5 +103,6 @@ dist
 # TernJS port file
 .tern-port
 
-# My ignores (protecting tokens essentially)
+db/info.json
+
 utils/default.js
