@@ -56,7 +56,7 @@ const addInfo = (message) => {
   const args = message.content.split(' ');
 
   if (args.length === 7) {
-    const id = args[2].replace(/[!<>@]/gi, '');
+    const id = message.author.id;
     if (db.get(id)) {
       console.log(`Exists already.`);
       message.reply(
@@ -130,9 +130,9 @@ const editInfo = (message) => {
       }
     });
 
-    db.set(args[2].toString().toLowerCase(), user);
+    db.set(id, user);
     message.reply("L'utilisateur <" + id + '> a été mis à jour.').then((m) => {
-      m.edit(m.content.replace(/</g, '<@'));
+      m.edit(m.content.replace(/r </g, 'r <@'));
     });
   }
 };
