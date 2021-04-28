@@ -1,5 +1,6 @@
 const info = require('./features/info');
 const birthTimer = require('./features/birthTimer');
+const votekick = require('./features/votekick');
 
 const handleMessage = (message) => {
   const command = message.content.split(' ')[0];
@@ -13,7 +14,9 @@ const handleMessage = (message) => {
   }
 
   if (message.content.match(/elon/gi)) {
-    message.channel.send('Et Elon Musk a vécu un an avec uniquement 1$ par jour pour vivre. UN SEUL DOLLAR !! Quel boss.')
+    message.channel.send(
+      'Et Elon Musk a vécu un an avec uniquement 1$ par jour pour vivre. UN SEUL DOLLAR !! Quel boss.'
+    );
   }
 
   if (command[0] === '$') {
@@ -27,6 +30,9 @@ const handleMessage = (message) => {
         break;
       case '$starttimer':
         birthTimer(message);
+        break;
+      case '$votekick':
+        votekick(message);
         break;
       default:
         message.reply('Why are you talking to me?');

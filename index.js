@@ -9,7 +9,6 @@ const Discord = require('discord.js');
 // Create an instance of a Discord client
 const client = new Discord.Client();
 
-
 /**
  * The ready event is vital, it means that only _after_ this will your bot start reacting to information
  * received from Discord
@@ -19,9 +18,13 @@ client.on('ready', async () => {
 });
 
 // Create an event listener for messages
-client.on('message', message => {
+client.on('message', (message) => {
   if (message.author !== client.user)
-    handleMessage(message);
+    try {
+      handleMessage(message);
+    } catch (error) {
+      console.log(`error in message`, error);
+    }
 });
 
 client.login(authToken);
