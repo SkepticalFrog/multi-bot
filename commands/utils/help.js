@@ -1,3 +1,4 @@
+const JSONdb = require('simple-json-db');
 const { prefix } = require('../../config.json');
 
 module.exports = {
@@ -9,28 +10,18 @@ module.exports = {
     const data = [];
     const { commands } = message.client;
 
+    const db = new JSONdb('./db/info.json');
+    const guildID = message.guild.id;
+    const currPrefix = db.get(guildID).prefix || prefix;
+
     if (!args.length) {
       data.push('Voici la liste de toutes mes commandes :');
       data.push(commands.map((command) => `\`${command.name}\``).join(', '));
       data.push(
-        `\nTu peux envoyer \`${prefix}help [command name]\` pour avoir les info d'une commande en particulier !`
+        `\nTu peux envoyer \`${currPrefix}help [command name]\` pour avoir les info d'une commande en particulier !`
       );
 
-      return message.author
-        .send(data, { split: true })
-        .then(() => {
-          if (message.channel.type === 'dm') return;
-          message.reply("Je t'ai envoyé un DM avec toutes mes commmandes !");
-        })
-        .catch((error) => {
-          console.error(
-            `[-] Could not send help DM to ${message.author.tag}.\n`,
-            error
-          );
-          message.reply(
-            "Apparemment je ne peux pas te DM... Je ne suis pas assez E-Girl à ton goût ?"
-          );
-        });
+      return message.channel.send(data, { split: true });
     }
 
     const name = args[0].toLowerCase();
@@ -48,7 +39,9 @@ module.exports = {
     if (command.description)
       data.push(`**Description :** ${command.description}`);
     if (command.usage)
-      data.push(`**Utilisation :** ${prefix}${command.name} ${command.usage}`);
+      data.push(
+        `**Utilisation :** ${currPrefix}${command.name} ${command.usage}`
+      );
     if (command.cooldown)
       data.push(`**Cooldown :** ${command.cooldown} secondes.`);
 
