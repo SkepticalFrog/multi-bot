@@ -6,7 +6,7 @@ moment.locale('fr')
 const timeFunction = (message) => {
   const db = new JSONdb('./db/info.json');
 
-  const users = db.get(message.guild.id);
+  const users = db.get(message.guild.id).users;
   const now = moment();
   const happybirthday = users.reduce((arr, user) => {
     const birth = moment(user.birthday)
