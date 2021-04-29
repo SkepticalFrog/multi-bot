@@ -6,13 +6,15 @@ const kick = (member, message) => {
 module.exports = {
   name: 'votekick',
   args: true,
-  cooldown: 60,
+  cooldown: 0,
   usage: '<utilisateur à kick du vocal>',
   description: "Kick un utilisateur d'un vocal suite à un vote.",
   execute(message, args) {
-    const reaction = '👍';
-    const id = args[0].replace(/[!@<>]/gi, '');
+    if (!message.mentions.users.size)
+      return message.channel.send('Utilisateur invalide.')
+    const id = message.mentions.users.first().id;
     message.guild.members.fetch(id).then((member) => {
+      const expectReaction = '👍';
       if (!member.voice.channel) {
         message.reply(`<@${id}> n'est pas dans un channel vocal.`);
         return;
@@ -28,13 +30,13 @@ module.exports = {
       const votesNeeded = Math.ceil(nbMembers / 2);
 
       const filter = (reaction) => {
-        return ['👍'].includes(reaction.emoji.name);
+        return [expectReaction].includes(reaction.emoji.name);
       };
 
       message.channel
         .send(`Pouce en l'air pour kick <@${member.id}>`)
         .then((m) => {
-          m.react(reaction).then(() => {
+          m.react(expectReaction).then(() => {
             m.awaitReactions(filter, {
               max: votesNeeded,
               time: 60000,
