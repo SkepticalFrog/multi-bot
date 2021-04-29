@@ -1,98 +1,40 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { token, prefix } = require('./config.json');
+const { token } = require('./config.json');
 
 const client = new Discord.Client();
+
 client.commands = new Discord.Collection();
+client.cooldowns = new Discord.Collection();
+
+const eventFiles = fs
+  .readdirSync('./events')
+  .filter((file) => file.endsWith('.js'));
 
 const commandFolders = fs.readdirSync('./commands');
-console.log('[+] Bot requires =>');
+console.log('[+] Bot requires following commands =>');
 
 for (const folder of commandFolders) {
   const commandFiles = fs
     .readdirSync(`./commands/${folder}`)
     .filter((file) => file.endsWith('.js'));
   for (const file of commandFiles) {
-    console.log(`\t+ ./commands/${folder}/${file}`);
+    console.log(`\t+\t./commands/${folder}/${file}`);
     const command = require(`./commands/${folder}/${file}`);
     client.commands.set(command.name, command);
   }
 }
 
-client.cooldowns = new Discord.Collection();
-
-client.once('ready', () => {
-  console.log('[+] Bot is ready!');
-});
+console.log(`[+] Bot requires following events =>`);
+for (const file of eventFiles) {
+  const event = require(`./events/${file}`);
+  if (event.once) {
+    console.log(`\t+ once\t./events/${file}`);
+    client.once(event.name, (...args) => event.execute(...args, client));
+  } else {
+    console.log(`\t+ on\t./events/${file}`);
+    client.on(event.name, (...args) => event.execute(...args, client));
+  }
+}
 
 client.login(token);
-
-client.on('message', (message) => {
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
-
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const commandName = args.shift().toLowerCase();
-
-  console.log(`[+] Command =>`, commandName + ' [' + args + ']');
-
-  const command =
-    client.commands.get(commandName) ||
-    client.commands.find(
-      (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
-    );
-
-  if (!command) return console.log(`\t[-] Unknown command.`);
-
-  if (command.guildOnly && message.channel.type === 'dm') {
-    return message.reply("Cette commande n'est pas exécutable en DM !");
-  }
-
-  if (command.permissions) {
-    const authorPerms = message.channel.permissionsFor(message.author);
-    if (!authorPerms || !authorPerms.has(command.permissions)) {
-      return message.reply("Cette commande n'est pas faite pour les enfants.");
-    }
-  }
-
-  if (command.args && !args.length) {
-    let reply = `Aucun argument fourni. Utilise la commande \`help\`.`;
-
-    if (command.usage) {
-      reply += `\nLa syntaxe correcte est : \`${prefix}${command.name} ${command.usage}\``;
-    }
-
-    return message.channel.send(reply);
-  }
-
-  const { cooldowns } = client;
-  if (!cooldowns.has(command.name)) {
-    cooldowns.set(command.name, new Discord.Collection());
-  }
-
-  const now = Date.now();
-  const timestamps = cooldowns.get(command.name);
-  const cooldownAmount = (command.cooldown || 3) * 1000;
-
-  if (timestamps.has(message.author.id)) {
-    const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
-
-    if (now < expirationTime) {
-      const timeLeft = (expirationTime - now) / 1000;
-      return message.reply(
-        `Attends ${timeLeft.toFixed(
-          1
-        )} seconde de plus avant d'utiliser la commande \`${command.name}\`.`
-      );
-    }
-  }
-
-  timestamps.set(message.author.id, now);
-  setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-
-  try {
-    command.execute(message, args);
-  } catch (err) {
-    console.log(`err ==>`, err);
-    message.reply(`Erreur lors de l'exécution de la commande.`);
-  }
-});
