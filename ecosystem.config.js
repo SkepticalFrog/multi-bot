@@ -5,7 +5,7 @@ module.exports = {
       script: 'updateAndRun.sh',
       watch: ['events', 'commands', 'index.js'],
       watch_delay: 1000,
-      ignore_watch: ['./node_modules', './db', './utils'],
+      ignore_watch: ['node_modules', 'db', 'utils'],
     },
   ],
 };
