@@ -1,5 +1,4 @@
 const JSONdb = require('simple-json-db');
-const db = new JSONdb('./db/info.json');
 
 module.exports = {
   name: 'delete-info',
@@ -8,6 +7,8 @@ module.exports = {
   args: true,
   usage: '<@user>',
   execute(message, args) {
+    const db = new JSONdb('./db/info.json');
+
     if (!message.mentions.users.size) {
       return message.reply(
         'La syntaxe pour la commande `delete` est :\n`$info delete @username`'

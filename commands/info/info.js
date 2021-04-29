@@ -1,5 +1,4 @@
 const JSONdb = require('simple-json-db');
-const db = new JSONdb('./db/info.json');
 
 const moment = require('moment')
 moment.locale('fr')
@@ -10,6 +9,8 @@ module.exports = {
   description: "Affiche les infos d'un utilisateur enregistré, ou de tous les utilisateur sans argument.",
   usage: '[@user]',
   execute(message, args) {
+    const db = new JSONdb('./db/info.json');
+
     if (!args.length || !message.mentions.users.size) {
       const guilds = db.JSON();
       const users = guilds[message.guild.id].sort((a, b) => a.firstname.localeCompare(b.firstname));

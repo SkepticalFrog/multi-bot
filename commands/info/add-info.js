@@ -1,5 +1,4 @@
 const JSONdb = require('simple-json-db');
-const db = new JSONdb('./db/info.json');
 
 module.exports = {
   name: 'add-info',
@@ -8,6 +7,8 @@ module.exports = {
   description: "Affiche les infos d'un utilisateur enregistré, ou de tous les utilisateur sans argument.",
   usage: '<lastname> <firstname> <email> <number> <birthday (YYYY-MM-DD)>',
   execute(message, args) {
+    const db = new JSONdb('./db/info.json');
+
     if (args.length === 5 || args.length === 6) {
       const id = args.length === 5 ? message.author.id : message.mentions.users.first().id;
       if (args.length > 5) args.shift();
