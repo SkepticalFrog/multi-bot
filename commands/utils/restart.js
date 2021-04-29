@@ -1,8 +1,8 @@
 module.exports = {
   name: 'restart',
-  description: 'Stops the bot\'s process and therefore restarts.',
+  description: 'Redémarre le bot pour le mettre à jour suivant le git.',
   execute(message, args) {
-    message.channel.send('Restarting bot now...')
+    message.channel.send('Redémarrage du bot...')
     process.exit(0);
   }
 }
