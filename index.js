@@ -35,10 +35,13 @@ client.on('message', (message) => {
 
   console.log(`[+] Command =>`, commandName + ' [' + args + ']');
 
-  if (!client.commands.has(commandName))
-    return console.log(`\t[-] Unknown command.`);
+  const command =
+    client.commands.get(commandName) ||
+    client.commands.find(
+      (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
+    );
 
-  const command = client.commands.get(commandName);
+  if (!command) return console.log(`\t[-] Unknown command.`);
 
   if (command.args && !args.length) {
     let reply = `Aucun argument fourni. Utilise la commande \`help\`.`;
