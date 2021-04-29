@@ -2,7 +2,7 @@ const JSONdb = require('simple-json-db');
 
 module.exports = {
   name: 'delete-info',
-  aliases: ["remove-info", 'rm-info'],
+  aliases: ['remove-info', 'rm-info'],
   description: "Supprime les données d'un utilisateur.",
   usage: '<@user>',
   args: true,
@@ -16,32 +16,38 @@ module.exports = {
       );
     }
     const id = message.mentions.users.first().id;
-    const user = db.get(message.guild.id).find(user => user.id === id);
+    const user = db.get(message.guild.id).users.find((user) => user.id === id);
     if (!user) {
       return message.reply("Cet utilisateur n'existe pas.");
     }
 
-    message.reply(
-      'Es-tu sûr de vouloir supprimer cet utilisateur ? (oui/non)'
-    );
+    message.reply('Es-tu sûr de vouloir supprimer cet utilisateur ? (oui/non)');
 
     message.channel
       .awaitMessages((m) => m.author.id == message.author.id, {
         max: 1,
         time: 30000,
-        errors: ['time']
+        errors: ['time'],
       })
       .then((collected) => {
         if (collected.first().content.match(/oui/gi)) {
-          const newUsers = db.get(message.guild.id).filter(user => user.id !== id);
-          db.set(message.guild.id, newUsers)
-          message.reply(`Utilisateur @${message.guild.members.cache.get(id).nickname} supprimé...`)
+          const newUsers = db
+            .get(message.guild.id)
+            .users.filter((user) => user.id !== id);
+          db.set(message.guild.id, {
+            ...db.get(message.guild.id),
+            users: newUsers,
+          });
+          message.reply(
+            `Utilisateur @${
+              message.guild.members.cache.get(id).nickname
+            } supprimé...`
+          );
         } else message.reply('Operation annulée.');
       })
       .catch((err) => {
-        console.log(`[-] Error: `, err)
+        console.log(`[-] Error: `, err);
         message.reply('Pas de réponse après 30 secondes, operation annulée.');
       });
-  }
+  },
 };
-

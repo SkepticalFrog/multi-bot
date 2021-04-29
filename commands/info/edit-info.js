@@ -20,12 +20,12 @@ module.exports = {
     let id;
     if (message.mentions.users.size) {
       id = message.mentions.users.first().id;
-      args.shift()
+      args.shift();
     } else {
-      id = message.author.id
+      id = message.author.id;
     }
-    const users = db.get(guildId);
-    const user = users.find(user => user.id === id);
+    const users = db.get(guildId).users;
+    const user = users.find((user) => user.id === id);
     if (!user) {
       return message.reply("L'utilisateur n'est pas enregistré.");
     }
@@ -38,12 +38,18 @@ module.exports = {
       }
     });
 
-    db.set(guildId, users.reduce((arr, curr) => {
-      if (curr.id === user.id) arr.push(user);
-      else arr.push(curr);
-      return arr;
-    }, []));
-    message.channel.send("L'utilisateur @" + message.guild.members.cache.get(id).nickname + ' a été mis à jour')
-  }
+    db.set(guildId, {
+      ...db.get(guildId),
+      users: users.reduce((arr, curr) => {
+        if (curr.id === user.id) arr.push(user);
+        else arr.push(curr);
+        return arr;
+      }, []),
+    });
+    message.channel.send(
+      "L'utilisateur @" +
+        message.guild.members.cache.get(id).nickname +
+        ' a été mis à jour'
+    );
+  },
 };
-

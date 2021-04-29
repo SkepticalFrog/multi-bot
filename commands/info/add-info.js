@@ -3,7 +3,8 @@ const JSONdb = require('simple-json-db');
 module.exports = {
   name: 'add-info',
   aliases: ['info-add'],
-  description: "Affiche les infos d'un utilisateur enregistré, ou de tous les utilisateur sans argument.",
+  description:
+    "Affiche les infos d'un utilisateur enregistré, ou de tous les utilisateur sans argument.",
   usage: '<lastname> <firstname> <email> <number> <birthday (YYYY-MM-DD)>',
   args: true,
   guildOnly: true,
@@ -11,9 +12,12 @@ module.exports = {
     const db = new JSONdb('./db/info.json');
 
     if (args.length === 5 || args.length === 6) {
-      const id = args.length === 5 ? message.author.id : message.mentions.users.first().id;
+      const id =
+        args.length === 5
+          ? message.author.id
+          : message.mentions.users.first().id;
       if (args.length > 5) args.shift();
-      if (db.get(message.guild.id).find(user => user.id === id)) {
+      if (db.get(message.guild.id).users.find((user) => user.id === id)) {
         console.log(`Exists already.`);
         return message.reply(
           'Cet utilisateur est déjà enregistré. Utilise la commande `edit` pour le modifier.'
@@ -28,18 +32,21 @@ module.exports = {
         number: args[3],
         birthday: args[4],
       };
-      const newUsers = db.get(message.guild.id);
+      const newUsers = db.get(message.guild.id).users;
       newUsers.push(user);
-      db.set(message.guild.id, newUsers);
+      db.set(message.guild.id, {
+        ...db.get(message.guild.id),
+        users: newUsers,
+      });
 
-
-      return message.channel.send("L'utilisateur @" + message.guild.members.cache.get(id).nickname + ' a bien été ajouté !');
-
+      return message.channel.send(
+        "L'utilisateur @" +
+          message.guild.members.cache.get(id).nickname +
+          ' a bien été ajouté !'
+      );
     }
     message.reply(
       `Syntaxe incorrecte. Consulte l'aide avec la commande \`help\` !`
     );
-
-  }
+  },
 };
-
