@@ -106,3 +106,5 @@ dist
 db/info.json
 
 utils/default.js
+
+config.json
