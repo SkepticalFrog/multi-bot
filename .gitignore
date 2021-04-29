@@ -108,3 +108,5 @@ db/info.json
 utils/default.js
 
 config.json
+
+backup.json
