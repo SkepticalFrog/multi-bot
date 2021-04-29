@@ -1,7 +1,7 @@
 module.exports = {
   name: 'avatar',
-  cooldown: 10,
   description: "Shows users' avatar",
+  cooldown: 10,
   execute(message, args) {
     if (!message.mentions.users.size) {
       return message.channel.send(

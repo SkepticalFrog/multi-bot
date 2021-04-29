@@ -4,8 +4,9 @@ module.exports = {
   name: 'delete-info',
   aliases: ["remove-info", 'rm-info'],
   description: "Supprime les données d'un utilisateur.",
-  args: true,
   usage: '<@user>',
+  args: true,
+  guildOnly: true,
   execute(message, args) {
     const db = new JSONdb('./db/info.json');
 

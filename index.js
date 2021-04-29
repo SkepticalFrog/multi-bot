@@ -43,6 +43,17 @@ client.on('message', (message) => {
 
   if (!command) return console.log(`\t[-] Unknown command.`);
 
+  if (command.guildOnly && message.channel.type === 'dm') {
+    return message.reply("Cette commande n'est pas exécutable en DM !");
+  }
+
+  if (command.permissions) {
+    const authorPerms = message.channel.permissionsFor(message.author);
+    if (!authorPerms || !authorPerms.has(command.permissions)) {
+      return message.reply("Cette commande n'est pas faite pour les enfants.");
+    }
+  }
+
   if (command.args && !args.length) {
     let reply = `Aucun argument fourni. Utilise la commande \`help\`.`;
 

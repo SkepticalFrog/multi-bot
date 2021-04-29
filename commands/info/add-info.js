@@ -3,9 +3,10 @@ const JSONdb = require('simple-json-db');
 module.exports = {
   name: 'add-info',
   aliases: ['info-add'],
-  args: true,
   description: "Affiche les infos d'un utilisateur enregistré, ou de tous les utilisateur sans argument.",
   usage: '<lastname> <firstname> <email> <number> <birthday (YYYY-MM-DD)>',
+  args: true,
+  guildOnly: true,
   execute(message, args) {
     const db = new JSONdb('./db/info.json');
 

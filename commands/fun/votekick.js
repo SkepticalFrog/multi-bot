@@ -6,7 +6,8 @@ const kick = (member, message) => {
 module.exports = {
   name: 'votekick',
   args: true,
-  cooldown: 0,
+  cooldown: 60,
+  guildOnly: true,
   usage: '<utilisateur à kick du vocal>',
   description: "Kick un utilisateur d'un vocal suite à un vote.",
   execute(message, args) {

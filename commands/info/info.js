@@ -8,6 +8,7 @@ module.exports = {
   aliases: ['whois'],
   description: "Affiche les infos d'un utilisateur enregistré, ou de tous les utilisateur sans argument.",
   usage: '[@user]',
+  guildOnly: true,
   execute(message, args) {
     const db = new JSONdb('./db/info.json');
 

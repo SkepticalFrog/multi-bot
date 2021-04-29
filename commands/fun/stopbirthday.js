@@ -7,6 +7,7 @@ module.exports = {
   name: 'stopbirthday',
   aliases: ['stopbd'],
   description: "Stoppe le timer pour afficher les anniversaires chaque jour.",
+  guildOnly: true,
   execute(message, args) {
     console.log(`message.client.birthdayInterval`, message.client.birthdayInterval)
 

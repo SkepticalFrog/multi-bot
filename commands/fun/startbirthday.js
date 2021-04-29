@@ -34,6 +34,7 @@ module.exports = {
   name: 'startbirthday',
   aliases: ['startbd'],
   description: "Lance le timer pour afficher les anniversaires chaque jour.",
+  guildOnly: true,
   execute(message, args) {
     if (message.client.birthdayInterval) {
       return message.channel.send('Le timer est déjà lancé.')
@@ -44,6 +45,3 @@ module.exports = {
     message.client.birthdayInterval = setInterval(() => timeFunction(message), moment.duration(1, 'days').asMilliseconds())
   },
 };
-
-// guild.systemChannel
-// guild.systemChannel 

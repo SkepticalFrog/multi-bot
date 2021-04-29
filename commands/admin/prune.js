@@ -1,9 +1,11 @@
 module.exports = {
   name: 'prune',
+  aliases: [],
+  description: 'Deletes a certain amount of messages in current channel',
+  usage: '<number of messages to delete>',
   args: true,
   cooldown: 20,
-  usage: '<number of messages to delete>',
-  description: 'Deletes a certain amount of messages in current channel',
+  permissions: 'ADMINISTRATOR',
   execute(message, args) {
     const amount = parseInt(args[0]) + 1;
 
