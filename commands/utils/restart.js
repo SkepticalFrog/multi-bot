@@ -4,7 +4,8 @@ module.exports = {
   aliases: ['rs'],
   description: 'Redémarre le bot pour le mettre à jour suivant le git.',
   execute(message, args) {
-    message.channel.send('Redémarrage du bot...')
-    process.exit(0);
-  }
-}
+    message.channel.send('Redémarrage du bot...').then(() => {
+      process.exit(0);
+    });
+  },
+};
