@@ -21,33 +21,44 @@ module.exports = {
       return message.reply("Cet utilisateur n'existe pas.");
     }
 
-    message.reply('Es-tu sûr de vouloir supprimer cet utilisateur ? (oui/non)');
+    const expectReaction = '👍';
+    const filter = (reaction) => {
+      return (
+        [expectReaction].includes(reaction.emoji.name) &&
+        reaction.users.cache.last().id === message.author.id
+      );
+    };
 
-    message.channel
-      .awaitMessages((m) => m.author.id == message.author.id, {
-        max: 1,
-        time: 30000,
-        errors: ['time'],
-      })
-      .then((collected) => {
-        if (collected.first().content.match(/oui/gi)) {
-          const newUsers = db
-            .get(message.guild.id)
-            .users.filter((user) => user.id !== id);
-          db.set(message.guild.id, {
-            ...db.get(message.guild.id),
-            users: newUsers,
-          });
-          message.reply(
-            `Utilisateur @${
-              message.guild.members.cache.get(id).nickname
-            } supprimé...`
-          );
-        } else message.reply('Operation annulée.');
-      })
-      .catch((err) => {
-        console.log(`[-] Error: `, err);
-        message.reply('Pas de réponse après 30 secondes, operation annulée.');
+    message
+      .reply('Es-tu sûr de vouloir supprimer cet utilisateur ?')
+      .then((m) => {
+        m.react(expectReaction).then(() => {
+          m.awaitReactions(filter, {
+            max: 1,
+            time: 10000,
+            errors: ['time'],
+          })
+            .then(() => {
+              const newUsers = db
+                .get(message.guild.id)
+                .users.filter((user) => user.id !== id);
+              db.set(message.guild.id, {
+                ...db.get(message.guild.id),
+                users: newUsers,
+              });
+              return message.reply(
+                `Utilisateur @${
+                  message.guild.members.cache.get(id).nickname
+                } supprimé...`
+              );
+            })
+            .catch((err) => {
+              console.log(`[-] Error in time delete-info ==>`, err);
+              return message.channel.send(
+                `Temps écoulé, l'utilisateur ne sera pas supprimé.`
+              );
+            });
+        });
       });
   },
 };

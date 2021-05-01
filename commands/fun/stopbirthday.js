@@ -9,8 +9,6 @@ module.exports = {
   description: "Stoppe le timer pour afficher les anniversaires chaque jour.",
   guildOnly: true,
   execute(message, args) {
-    console.log(`message.client.birthdayInterval`, message.client.birthdayInterval)
-
     if (!message.client.birthdayInterval) {
       return message.channel.send('Le timer est déjà stoppé.')
     }

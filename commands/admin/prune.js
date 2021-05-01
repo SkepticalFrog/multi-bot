@@ -4,13 +4,15 @@ module.exports = {
   description: 'Deletes a certain amount of messages in current channel',
   usage: '<number of messages to delete>',
   args: true,
-  cooldown: 0,
+  cooldown: 10,
   permissions: 'ADMINISTRATOR',
   execute(message, args) {
     let amount = parseInt(args[0]);
 
     if (isNaN(amount)) {
-      return message.reply(`Comment tu veux que je compte jusqu'à "${args[0]}" ? C'est même pas un nombre !`);
+      return message.reply(
+        `Comment tu veux que je compte jusqu'à "${args[0]}" ? C'est même pas un nombre !`
+      );
     } else if (amount < 1) {
       return message.reply(`Je ne peux pas supprimer moins de 1 message...`);
     } else if (amount > 98) {
@@ -25,33 +27,27 @@ module.exports = {
       );
     };
 
-    message
-      .reply(`Es-tu sûr de supprimer ${amount} messages ?`)
-      .then((m) => {
-        m.react(expectReaction)
+    message.reply(`Es-tu sûr de supprimer ${amount} messages ?`).then((m) => {
+      m.react(expectReaction).then(() => {
+        m.awaitReactions(filter, {
+          max: 1,
+          time: 10000,
+          errors: ['time'],
+        })
           .then(() => {
-            console.log(`m`, m);
+            message.channel.bulkDelete(amount + 2, true).catch((err) => {
+              console.log('[-] Error in prune ==>', err);
+              message.channel.send(`Erreur pendant la prune;`);
+            });
           })
-          .then(() => {
-            m.awaitReactions(filter, {
-              max: 1,
-              time: 10000,
-              errors: ['time'],
-            })
-              .then(() => {
-                message.channel.bulkDelete(amount + 2, true).catch((err) => {
-                  console.log('[-] Error in prune ==>', err);
-                  message.channel.send(`Erreur pendant la prune;`);
-                });
-              })
-              .catch((err) => {
-                console.log(`[-] Error in time prune ==>`, err);
-                message.channel.send(
-                  `Temps écoulé, les messages ne seront pas supprimés.`
-                );
-              });
+          .catch((err) => {
+            console.log(`[-] Error in time prune ==>`, err);
+            message.channel.send(
+              `Temps écoulé, les messages ne seront pas supprimés.`
+            );
           });
       });
+    });
     if (false) {
     }
   },
