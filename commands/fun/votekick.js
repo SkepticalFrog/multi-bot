@@ -12,7 +12,7 @@ module.exports = {
   description: "Kick un utilisateur d'un vocal suite à un vote.",
   execute(message, args) {
     if (!message.mentions.users.size)
-      return message.channel.send('Utilisateur invalide.')
+      return message.channel.send('Utilisateur invalide.');
     const id = message.mentions.users.first().id;
     message.guild.members.fetch(id).then((member) => {
       const expectReaction = '👍';
@@ -21,17 +21,23 @@ module.exports = {
         return;
       }
       const nbMembers = member.voice.channel.members.size;
+      const membersInVoice = member.voice.channel.members;
       const inVoiceChannel =
-        member.voice.channel.members.filter((m) => m.id === message.author.id)
-          .size >= 1;
+        membersInVoice.filter((m) => m.id === message.author.id).size >= 1;
       if (!inVoiceChannel) {
         message.reply("Tu ne peux pas kick si tu n'es pas dans le vocal.");
         return;
       }
-      const votesNeeded = Math.ceil(nbMembers / 2);
+      const votesNeeded = Math.ceil(nbMembers / 2) + 1;
+      let falseReactions = 0;
 
       const filter = (reaction) => {
-        return [expectReaction].includes(reaction.emoji.name);
+        if (membersInVoice.has(reaction.users.cache.last().id)) {
+          return [expectReaction].includes(reaction.emoji.name);
+        } else {
+          falseReactions += 1;
+          return false;
+        }
       };
 
       message.channel
@@ -39,12 +45,12 @@ module.exports = {
         .then((m) => {
           m.react(expectReaction).then(() => {
             m.awaitReactions(filter, {
-              max: votesNeeded,
+              max: votesNeeded + falseReactions,
               time: 60000,
               errors: ['time'],
             })
               .then((collected) => {
-                if (collected.first().count - 1 >= votesNeeded)
+                if (collected.first().count - 1 - falseReactions >= votesNeeded)
                   kick(member, message);
                 else message.channel.send("Essaie pas de tricher p'tit con.");
               })
