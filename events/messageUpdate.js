@@ -6,7 +6,10 @@ const { prefix } = require('../config.json');
 module.exports = {
   name: 'messageUpdate',
   async execute(oldMessage, newMessage, client) {
-    if (newMessage.author.id !== client.id) {
+    if (
+      newMessage.author.id !== client.id &&
+      newMessage.content !== oldMessage.content
+    ) {
       newMessage
         .react('834319455450300419')
         .then(() => newMessage.react('👀'))
