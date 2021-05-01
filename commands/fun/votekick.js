@@ -28,7 +28,7 @@ module.exports = {
         message.reply("Tu ne peux pas kick si tu n'es pas dans le vocal.");
         return;
       }
-      const votesNeeded = Math.ceil(nbMembers / 2) + 1;
+      const votesNeeded = Math.ceil(nbMembers / 2);
       let falseReactions = 0;
 
       const filter = (reaction) => {
