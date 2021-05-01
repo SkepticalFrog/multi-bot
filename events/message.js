@@ -25,7 +25,9 @@ module.exports = {
       );
 
       if (hiddenCommand) {
-        console.log(`[+] Hidden command ==> ${hiddenCommand.name}`);
+        console.log(
+          `[+] Hidden command ==> ${hiddenCommand.name} by ${message.author.username}`
+        );
 
         if (!cooldowns.has(hiddenCommand.name)) {
           cooldowns.set(hiddenCommand.name, 0);
@@ -59,13 +61,29 @@ module.exports = {
         }
         return 0;
       }
+
+      if (
+        message.mentions.users.size &&
+        message.mentions.users.has(client.user.id)
+      ) {
+        console.log(`[+] Bot replies to ==>`, message.author.username);
+        try {
+          return client.hiddenCommands.get('call').execute(message);
+        } catch (err) {
+          console.log(`[-] Error in bot reply ==>`, err);
+        }
+      }
       return -1;
     }
 
     const args = message.content.slice(currPrefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-    console.log(`[+] Command =>`, commandName + ' [' + args + ']');
+    console.log(
+      `[+] Command =>`,
+      commandName + ' [' + args + '] by',
+      message.author.username
+    );
 
     const command =
       client.commands.get(commandName) ||
