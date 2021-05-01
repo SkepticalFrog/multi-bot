@@ -5,14 +5,62 @@ const { prefix } = require('../config.json');
 
 module.exports = {
   name: 'message',
-  execute(message) {
+  execute(message, updated = false) {
+    if (message.author.bot) return -1;
+    if (updated && updated.user) updated = false;
     const { client } = message;
+    const { cooldowns } = client;
 
     const db = new JSONdb('./db/info.json');
     const guildID = message.guild.id;
     const currPrefix = db.get(guildID).prefix || prefix;
 
-    if (!message.content.startsWith(currPrefix) || message.author.bot) return -1;
+    if (!message.content.startsWith(currPrefix)) {
+      if (updated) return -1;
+      const hiddenCommand = client.hiddenCommands.find((cmd) =>
+        cmd.trigger.reduce((bool, trig) => {
+          bool = bool || message.content.match(trig);
+          return bool;
+        }, false)
+      );
+
+      if (hiddenCommand) {
+        console.log(`[+] Hidden command ==> ${hiddenCommand.name}`);
+
+        if (!cooldowns.has(hiddenCommand.name)) {
+          cooldowns.set(hiddenCommand.name, 0);
+        }
+
+        const now = Date.now();
+        const timestamp = cooldowns.get(hiddenCommand.name);
+        const cooldownAmount = (hiddenCommand.cooldown || 3) * 1000;
+
+        const expirationTime = timestamp + cooldownAmount;
+
+        if (now < expirationTime) {
+          const mLeft = Math.floor((expirationTime - now) / 1000 / 60);
+          const sLeft = ((expirationTime - now) / 1000) % 60;
+
+          return console.log(
+            `\t[-] ${mLeft} minutes ${sLeft.toFixed(
+              1
+            )} seconds left before reuse of hidden command ${
+              hiddenCommand.name
+            }`
+          );
+        }
+
+        cooldowns.set(hiddenCommand.name, now);
+
+        try {
+          hiddenCommand.execute(message);
+        } catch (err) {
+          console.log(`[-] Error in hidden command ==>`, err);
+        }
+        return 0;
+      }
+      return -1;
+    }
 
     const args = message.content.slice(currPrefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
@@ -55,7 +103,6 @@ module.exports = {
       return message.channel.send(reply);
     }
 
-    const { cooldowns } = client;
     if (!cooldowns.has(command.name)) {
       cooldowns.set(command.name, new Discord.Collection());
     }

@@ -5,6 +5,7 @@ const { token } = require('./config.json');
 const client = new Discord.Client();
 
 client.commands = new Discord.Collection();
+client.hiddenCommands = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
 
 const eventFiles = fs
@@ -22,6 +23,20 @@ for (const folder of commandFolders) {
     console.log(`\t+\t./commands/${folder}/${file}`);
     const command = require(`./commands/${folder}/${file}`);
     client.commands.set(command.name, command);
+  }
+}
+
+const hiddenCommandFolders = fs.readdirSync('./hidden_commands');
+console.log('[+] Bot requires following hidden commands =>');
+
+for (const folder of hiddenCommandFolders) {
+  const commandFiles = fs
+    .readdirSync(`./hidden_commands/${folder}`)
+    .filter((file) => file.endsWith('.js'));
+  for (const file of commandFiles) {
+    console.log(`\t+\t./hidden_commands/${folder}/${file}`);
+    const command = require(`./hidden_commands/${folder}/${file}`);
+    client.hiddenCommands.set(command.name, command);
   }
 }
 
