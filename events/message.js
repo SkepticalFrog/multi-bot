@@ -12,7 +12,7 @@ module.exports = {
     const guildID = message.guild.id;
     const currPrefix = db.get(guildID).prefix || prefix;
 
-    if (!message.content.startsWith(currPrefix) || message.author.bot) return;
+    if (!message.content.startsWith(currPrefix) || message.author.bot) return -1;
 
     const args = message.content.slice(currPrefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
@@ -83,7 +83,7 @@ module.exports = {
     try {
       command.execute(message, args);
     } catch (err) {
-      console.log(`err ==>`, err);
+      console.log(`[-] Error in command ==>`, err);
       message.reply(`Erreur lors de l'exécution de la commande.`);
     }
   },
