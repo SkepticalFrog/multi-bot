@@ -1,8 +1,3 @@
-const kick = (member, message) => {
-  member.voice.kick();
-  message.reply(`L'utilisateur <@${member.id}> a été kick du vocal.`);
-};
-
 module.exports = {
   name: 'votekick',
   args: true,
@@ -50,11 +45,18 @@ module.exports = {
               errors: ['time'],
             })
               .then((collected) => {
-                if (collected.first().count - 1 - falseReactions >= votesNeeded)
-                  kick(member, message);
-                else message.channel.send("Essaie pas de tricher p'tit con.");
+                if (
+                  collected.first().count - 1 - falseReactions >=
+                  votesNeeded
+                ) {
+                  member.voice.kick();
+                  message.channel.send(
+                    `<@${member.id}> a été kick du channel <#${member.voice.channel.id}>`
+                  );
+                } else message.channel.send("Essaie pas de tricher p'tit con.");
               })
-              .catch(() => {
+              .catch((err) => {
+                console.log(err);
                 message.reply('Pas assez de votes.');
               });
           });
