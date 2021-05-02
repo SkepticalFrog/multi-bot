@@ -13,13 +13,6 @@ module.exports = {
 
     const db = new JSONdb('./db/info.json');
 
-    if (message.channel.type !== 'dm' && !db.get(message.guild.id)) {
-      db.set(message.guild.id, {
-        users: [],
-        prefix: '',
-      });
-    }
-
     const currPrefix =
       message.channel.type !== 'dm'
         ? db.get(message.guild.id).prefix || prefix
