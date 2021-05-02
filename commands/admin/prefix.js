@@ -7,6 +7,7 @@ module.exports = {
   description: 'Affiche ou modifie le prefixe du bot',
   usage: '[new prefix]',
   cooldown: 60,
+  guildOnly: true,
   permissions: 'ADMINISTRATOR',
   execute(message, args) {
     const db = new JSONdb('./db/info.json');

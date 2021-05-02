@@ -12,8 +12,18 @@ module.exports = {
     const { cooldowns } = client;
 
     const db = new JSONdb('./db/info.json');
-    const guildID = message.guild.id;
-    const currPrefix = db.get(guildID).prefix || prefix;
+
+    if (message.channel.type !== 'dm' && !db.get(message.guild.id)) {
+      db.set(message.guild.id, {
+        users: [],
+        prefix: '',
+      });
+    }
+
+    const currPrefix =
+      message.channel.type !== 'dm'
+        ? db.get(message.guild.id).prefix || prefix
+        : prefix;
 
     if (!message.content.startsWith(currPrefix)) {
       if (updated) return -1;

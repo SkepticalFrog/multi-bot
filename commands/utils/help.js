@@ -11,8 +11,10 @@ module.exports = {
     const { commands } = message.client;
 
     const db = new JSONdb('./db/info.json');
-    const guildID = message.guild.id;
-    const currPrefix = db.get(guildID).prefix || prefix;
+    const currPrefix =
+      message.channel.type !== 'dm'
+        ? db.get(message.guild.id).prefix || prefix
+        : prefix;
 
     if (!args.length) {
       data.push('Voici la liste de toutes mes commandes :');
