@@ -2,4 +2,6 @@
 
 git pull
 
+yarn
+
 node index.js
