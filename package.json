@@ -5,6 +5,7 @@
   "author": "Matt",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.21.1",
     "discord.js": "^12.5.3",
     "moment": "^2.29.1",
     "simple-json-db": "^1.2.3"
