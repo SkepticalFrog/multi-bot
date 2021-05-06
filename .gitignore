@@ -108,7 +108,7 @@ db/info.json
 utils/default.js
 
 config.json
-config/**
+config/default.json
 
 backup.json
 
