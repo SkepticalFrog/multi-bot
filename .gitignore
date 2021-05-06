@@ -108,5 +108,8 @@ db/info.json
 utils/default.js
 
 config.json
+config/**
 
 backup.json
+
+config_old.json
