@@ -1,0 +1,5 @@
+{
+  "mongoURI": "yourMongoURI",
+  "token": "yourDiscordBotToken",
+  "prefix": "yourPrefix"
+}

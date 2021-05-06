@@ -6,8 +6,8 @@ module.exports = {
   aliases: ['gs', 'google'],
   description: 'Effectue une recherche sur Google.',
   cooldown: 10,
+  usage: '<search terms>',
   args: true,
-  permissions: 'ADMINISTRATOR',
   execute: async (message, args) => {
     const query = args.join('+');
     const url = 'https://lmgtfy.com/?q=' + query + '&iie=1';

@@ -1,5 +1,5 @@
 const JSONdb = require('simple-json-db');
-const { prefix } = require('../../config.json');
+const { prefix } = require('config');
 
 module.exports = {
   name: 'help',

@@ -1,7 +1,7 @@
 const JSONdb = require('simple-json-db');
 const Discord = require('discord.js');
 
-const { prefix } = require('../config.json');
+const { prefix } = require('config');
 
 module.exports = {
   name: 'message',
