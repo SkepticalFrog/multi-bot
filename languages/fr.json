@@ -1,0 +1,78 @@
+{
+  "chprefix": {
+    "description": "Affiche ou modifie le préfixe du bot.",
+    "currPrefix": "Le préfixe actuel est : **",
+    "alreadyUsed": "Ce préfixe est déjà utilisé.",
+    "changedPrefix1": "Le préfixe est maintenant **",
+    "changedPrefix2": "** pour ce serveur."
+  },
+  "prune": {
+    "description": "Supprime un certain nombre de message dans le canal en cours.",
+    "isnan1": "Comment tu veux que je compte jusqu'à ",
+    "isnan2": " ? C'est même pas un nombre !",
+    "amountErr": "Je ne peux pas supprimer moins de 1 message...",
+    "confirm1": "Es-tu sûr de supprimer ",
+    "confirm2": " messages ?",
+    "errPrune": "Erreur pendant la prune.",
+    "timeout": "Temps écoulé, les messages ne seront pas supprimés."
+  },
+  "restart": {
+    "description": "Redémarre le bot pour le mettre à jour suivant le git.",
+    "reboot": "Redémarrage du bot..."
+  },
+  "avatar": {
+    "description": "Montre l'avatar d'un utilisateur",
+    "text1": "Avatar de ",
+    "text2": "."
+  },
+  "startbirthday": {
+    "description": "Lance le timer pour afficher les anniversaires chaque jour.",
+    "alreadyStarted": "Le timer est déjà lancé.",
+    "startTimer": "Okay, ça part de là.",
+    "hey": "Hey hey hey",
+    "happyOne": "\nJoyeux anniversaire à toi !!",
+    "happySeveral": "\nJoyeux anniversaire à vous !!",
+    "noBirthday": "Pas d'anniversaire aujourd'hui..."
+  },
+  "stopbirthday": {
+    "description": "Stoppe le timer pour afficher les anniversaires chaque jour.",
+    "alreadyStopped": "Le timer est déjà stoppé.",
+    "stopTimer": "Le timer est stoppé."
+  },
+  "votekick": {
+    "description": "Kick un utilisateur d'un vocal suite à un vote.",
+    "invalidUser": "Utilisateur invalide.",
+    "userNotInVoice1": "<@",
+    "userNotInVoice2": "> n'est pas dans un channel vocal",
+    "authorNotInVoice": "Tu ne peux pas kick si tu n'est pas dans le vocal.",
+    "voteFor1": "Pouce en l'air pour kick <@",
+    "voteFor2": ">",
+    "kicked1": "<@",
+    "kicked2": "> a été kick du channel <#",
+    "cheat": "Essaie pas de tricher p'tit con.",
+    "noVotes": "Pas assez de votes."
+  },
+  "add-info": {
+    "description": "Ajoute les informations d'un utilisateur dans la base de données.",
+    "alreadyRegistered": "Cet utilisateur est déjà enregistré. Utilise la commande `edit` pour le modifier.",
+    "added1": "L'utilisateur @",
+    "added2": " a bien été ajouté !",
+    "badArgs": "Syntaxe incorrecte. Consulte l'aide avec la commande `help` !"
+  },
+  "delete-info": {
+    "description": "Supprime les données d'un utilisateur.",
+    "syntax": "La syntaxe pour la commande `delete` est :\n`$info delete @username`",
+    "noUser": "Cet utilisateur n'existe pas.",
+    "confirm": "Es-tu sûr de vouloir supprimer cet utilisateur ?",
+    "deleted1": "Utilisateur @",
+    "deleted2": " supprimé.",
+    "time": "Temps écoulé, l'utilisateur ne sera pas supprimé."
+  },
+  "edit-info": {
+    "description": "Permet de modifier les informations d'un utilisateur.",
+    "syntax": "La syntaxe pour la commande `edit` est :\n`$info edit @username parametre=nouvelle_valeur`",
+    "notRegistered": "L'utilisateur n'est pas enregistré.",
+    "updated1": "L'utilisateur @",
+    "updated2": " a été mis à jour"
+  }
+}
