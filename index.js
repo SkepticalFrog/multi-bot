@@ -1,6 +1,7 @@
 const fs = require('fs');
 const Discord = require('discord.js');
 const { token } = require('config');
+const connectDB = require('./config/db');
 
 const client = new Discord.Client();
 
@@ -53,3 +54,5 @@ for (const file of eventFiles) {
 }
 
 client.login(token);
+connectDB();
+
