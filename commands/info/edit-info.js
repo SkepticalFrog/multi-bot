@@ -1,4 +1,5 @@
-const JSONdb = require('simple-json-db');
+const User = require('../../schemas/User');
+const { unauthorized } = require('config');
 
 module.exports = {
   name: 'edit-info',
@@ -7,16 +8,9 @@ module.exports = {
   usage: '<@user> [parameter=new_value]',
   args: true,
   guildOnly: true,
-  execute(message, args) {
-    const db = new JSONdb('./db/info.json');
-
+  execute: async (message, args) => {
     const guildId = message.guild.id;
 
-    if (!args.length) {
-      return message.reply(
-        'La syntaxe pour la commande `edit` est :\n`$info edit @username parametre=nouvelle_valeur`'
-      );
-    }
     let id;
     if (message.mentions.users.size) {
       id = message.mentions.users.first().id;
@@ -24,28 +18,28 @@ module.exports = {
     } else {
       id = message.author.id;
     }
-    const users = db.get(guildId).users;
-    const user = users.find((user) => user.id === id);
-    if (!user) {
+    const user = await User.findById(id);
+    if (!user || !user.guilds.includes(guildId)) {
       return message.reply("L'utilisateur n'est pas enregistré.");
     }
-    const keys = Object.keys(user);
+
+    const keys = Object.keys(user.toObject());
+    const temp = {};
     args.map((curr) => {
       const param1 = curr.split('=')[0];
       const param2 = curr.split('=')[1];
-      if (keys.includes(param1)) {
-        user[param1] = param2;
+      if (keys.includes(param1) && !unauthorized.includes(param1)) {
+        temp[param1] = param2;
       }
     });
 
-    db.set(guildId, {
-      ...db.get(guildId),
-      users: users.reduce((arr, curr) => {
-        if (curr.id === user.id) arr.push(user);
-        else arr.push(curr);
-        return arr;
-      }, []),
-    });
+    await user.updateOne(
+      {
+        $set: temp,
+      },
+      { new: true }
+    );
+
     message.channel.send(
       "L'utilisateur @" +
         message.guild.members.cache.get(id).nickname +

@@ -1,4 +1,6 @@
 const JSONdb = require('simple-json-db');
+const connectDB = require('../../config/db');
+const User = require('../../schemas/User');
 
 module.exports = {
   name: 'delete-info',
@@ -7,18 +9,15 @@ module.exports = {
   usage: '<@user>',
   args: true,
   guildOnly: true,
-  execute(message, args) {
-    const db = new JSONdb('./db/info.json');
+  execute: async (message, args, mongoose) => {
+    const id = message.mentions.users.first()
+      ? message.mentions.users.first().id || message.author.id
+      : message.author.id;
 
-    if (!message.mentions.users.size) {
-      return message.reply(
-        'La syntaxe pour la commande `delete` est :\n`$info delete @username`'
-      );
-    }
-    const id = message.mentions.users.first().id;
-    const user = db.get(message.guild.id).users.find((user) => user.id === id);
+    let user = await User.findById(id);
+
     if (!user) {
-      return message.reply("Cet utilisateur n'existe pas.");
+      return message.channel.send("L'utilisateur n'est pas enregistré.");
     }
 
     const expectReaction = '👍';
@@ -39,18 +38,13 @@ module.exports = {
             errors: ['time'],
           })
             .then(() => {
-              const newUsers = db
-                .get(message.guild.id)
-                .users.filter((user) => user.id !== id);
-              db.set(message.guild.id, {
-                ...db.get(message.guild.id),
-                users: newUsers,
+              user.delete().then(() => {
+                message.reply(
+                  `Utilisateur @${
+                    message.guild.members.cache.get(id).nickname
+                  } supprimé...`
+                );
               });
-              return message.reply(
-                `Utilisateur @${
-                  message.guild.members.cache.get(id).nickname
-                } supprimé...`
-              );
             })
             .catch((err) => {
               console.log(`[-] Error in time delete-info ==>`, err);

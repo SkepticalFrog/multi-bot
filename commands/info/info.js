@@ -1,6 +1,7 @@
 const JSONdb = require('simple-json-db');
 
 const moment = require('moment');
+const User = require('../../schemas/User');
 moment.locale('fr');
 
 module.exports = {
@@ -10,14 +11,12 @@ module.exports = {
     "Affiche les infos d'un utilisateur enregistré, ou de tous les utilisateur sans argument.",
   usage: '[@user]',
   guildOnly: true,
-  execute(message, args) {
+  execute: async (message, args) => {
     const db = new JSONdb('./db/info.json');
 
     if (!args.length || !message.mentions.users.size) {
-      const guilds = db.JSON();
-      const users = guilds[message.guild.id].users.sort((a, b) =>
-        a.firstname.localeCompare(b.firstname)
-      );
+      const users = await User.find({ guilds: message.guild.id });
+      
       if (!users.length) return message.reply('Aucun utilisateur enregistré.');
       const reply = users.reduce((str, user) => {
         str +=
@@ -28,7 +27,7 @@ module.exports = {
           ' : ' +
           user.email +
           ', ' +
-          user.number +
+          user.phone_number +
           ' né le ' +
           moment(user.birthday).format('dddd D MMMM YYYY') +
           ' (@' +
@@ -53,7 +52,7 @@ module.exports = {
           ' : ' +
           user.email +
           ', ' +
-          user.number +
+          user.phone_number +
           ' né le ' +
           moment(user.birthday).format('dddd D MMMM YYYY')
       );
