@@ -54,7 +54,6 @@ module.exports = {
     user.guilds.push(message.guild.id);
 
     await user.save();
-    console.log(`user`, user);
 
     return message.channel.send(
       "L'utilisateur @" +

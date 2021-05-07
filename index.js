@@ -3,7 +3,9 @@ const Discord = require('discord.js');
 const { token } = require('config');
 const connectDB = require('./config/db');
 
-const client = new Discord.Client();
+const client = new Discord.Client({
+  ws: { intents: new Discord.Intents(Discord.Intents.ALL) },
+});
 
 client.commands = new Discord.Collection();
 client.hiddenCommands = new Discord.Collection();

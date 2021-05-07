@@ -1,12 +1,9 @@
-const JSONdb = require('simple-json-db');
-
 const moment = require('moment')
 moment.locale('fr')
 
-const timeFunction = (message) => {
-  const db = new JSONdb('./db/info.json');
+const timeFunction = async (message) => {
 
-  const users = db.get(message.guild.id).users;
+  const users = await User.find({guilds: message.guilds.id})
   const now = moment();
   const happybirthday = users.reduce((arr, user) => {
     const birth = moment(user.birthday)

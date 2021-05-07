@@ -1,22 +1,25 @@
-const JSONdb = require('simple-json-db');
 const Discord = require('discord.js');
 
 const { prefix } = require('config');
+const Prefix = require('../schemas/Prefix');
 
 module.exports = {
   name: 'message',
-  execute(message, updated = false) {
+  execute: async (message, updated = false) => {
     if (message.author.bot) return -1;
     if (updated && updated.user) updated = false;
-    const { client } = message;
+    const { client, guild } = message;
     const { cooldowns } = client;
 
-    const db = new JSONdb('./db/info.json');
+    let currPrefix = await Prefix.findById(guild.id);
 
-    const currPrefix =
-      message.channel.type !== 'dm'
-        ? db.get(message.guild.id).prefix || prefix
-        : prefix;
+    if (!currPrefix) {
+      currPrefix = prefix;
+    } else {
+      currPrefix = currPrefix.symbol;
+    }
+
+    console.log(`currPrefix`, currPrefix);
 
     if (!message.content.startsWith(currPrefix)) {
       if (updated) return -1;
