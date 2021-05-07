@@ -6,17 +6,18 @@ module.exports = {
   aliases: [],
   description: 'Affiche ou modifie le prefixe du bot',
   usage: '[new prefix]',
-  cooldown: 60,
+  cooldown: 10,
   guildOnly: true,
   permissions: 'ADMINISTRATOR',
   execute: async (message, args) => {
     const guildID = message.guild.id;
 
-    let currPrefix = await Prefix.findById(guildID).symbol;
+    let currPrefix = await Prefix.findById(guildID);
     if (!currPrefix) {
       currPrefix = prefix;
+    } else {
+      currPrefix = currPrefix.symbol;
     }
-    console.log(`currPrefix`, currPrefix);
     if (!args.length) {
       return message.channel.send(`Le préfixe actuel est  **${currPrefix}**`);
     }
