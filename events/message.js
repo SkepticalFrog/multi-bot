@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 
 const { prefix } = require('config');
-const Prefix = require('../schemas/Prefix');
+const Server = require('../schemas/Server');
 
 module.exports = {
   name: 'message',
@@ -11,12 +11,13 @@ module.exports = {
     const { client, guild } = message;
     const { cooldowns } = client;
 
-    let currPrefix = await Prefix.findById(guild.id);
-
-    if (!currPrefix) {
+    let server;
+    let currPrefix;
+    if (message.channel.type === 'dm') {
       currPrefix = prefix;
     } else {
-      currPrefix = currPrefix.symbol;
+      server = await Server.findById(message.guild.id);
+      currPrefix = server.prefix || prefix;
     }
 
     if (!message.content.startsWith(currPrefix)) {
@@ -104,6 +105,10 @@ module.exports = {
 
     if (command.guildOnly && message.channel.type === 'dm') {
       return message.reply("Cette commande n'est pas exécutable en DM !");
+    }
+
+    if (server.unused.includes(command.name)) {
+      return message.reply('Cette commande est désactivée sur le serveur.');
     }
 
     if (command.permissions) {

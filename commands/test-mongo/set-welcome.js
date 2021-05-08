@@ -1,4 +1,4 @@
-const Welcome = require('../../schemas/Welcome');
+const Server = require('../../schemas/Server');
 
 module.exports = {
   name: 'set-welcome',
@@ -11,31 +11,27 @@ module.exports = {
     const { channel, guild } = message;
 
     if (!args.length) {
-      let welcome = await Welcome.findById(guild.id);
-      if (!welcome) {
+      let server = await Server.findById(guild.id);
+      if (!server.welcome) {
         return message.reply(
           "Aucun message de bienvenue n'est configuré pour ce serveur."
         );
       }
 
       return message.reply(
-        `Le message de bienvenue actuel pour ce serveur est : "${welcome.text}", sur le channel <#${welcome.channelId}>.`
+        `Le message de bienvenue actuel pour ce serveur est : "${server.welcome}", sur le channel <#${server.defaultChannel}>.`
       );
     }
 
-    let welcome = await Welcome.findById(guild.id);
-    if (!welcome) {
-      welcome = new Welcome({
-        _id: guild.id,
-        text: args.join(' '),
-        channelId: channel.id,
-      });
-
-      await welcome.save();
-    } else {
-      welcome.set({ text: args.join(' ') });
-      await welcome.save();
-    }
+    await Server.findByIdAndUpdate(
+      guild.id,
+      {
+        $set: {
+          welcome: args.join(' '),
+        },
+      },
+      { new: true }
+    );
 
     message.reply('Le message de bienvenue a été mis à jour.');
   },

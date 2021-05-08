@@ -1,20 +1,22 @@
-const JSONdb = require('simple-json-db');
 const { prefix } = require('config');
+const Server = require('../../schemas/Server');
 
 module.exports = {
   name: 'help',
   usage: '[command name]',
   description:
     "Liste toutes les commandes, ou les informations spécifiques à l'une d'entre elles.",
-  execute(message, args) {
+  execute: async (message, args) => {
     const data = [];
     const { commands } = message.client;
 
-    const db = new JSONdb('./db/info.json');
-    const currPrefix =
-      message.channel.type !== 'dm'
-        ? db.get(message.guild.id).prefix || prefix
-        : prefix;
+    let currPrefix;
+    if (message.channel.type === 'dm') {
+      currPrefix = prefix;
+    } else {
+      const server = await Server.findById(message.guild.id);
+      currPrefix = server.prefix || prefix;
+    }
 
     if (!args.length) {
       data.push('Voici la liste de toutes mes commandes :');
