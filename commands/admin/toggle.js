@@ -15,10 +15,10 @@ module.exports = {
       if (!server.unused.length) {
         return message.reply('Toutes les commandes sont actives.');
       }
-      const data = server.unused.reduce((str, curr) => {
-        str += '`' + curr + '` | ';
-      }, '|');
-      return message.reply('Liste des commandes désactivées :\n' + data);
+      return message.reply(
+        'Liste des commandes désactivées :\n' +
+          server.unused.map((c) => '`' + c + '`')
+      );
     }
 
     if (args.length !== 2) {
@@ -27,21 +27,37 @@ module.exports = {
       );
     }
 
-    if (!message.client.commands.find((c) => c.name === args[1])) {
+    if (
+      (!message.client.commands.find((c) => c.name === args[1]) ||
+        args[1] === 'toggle') &&
+      args[1] !== 'all'
+    ) {
       return message.reply("La commande n'existe pas.");
     }
+
     if (args[0] === 'on') {
+      const data =
+        args[1] === 'all' ? [] : server.unused.filter((o) => o !== args[1]);
+
       await server.updateOne({
         $set: {
-          unused: server.unused.filter((o) => o !== args[1]),
+          unused: data,
         },
       });
       return message.reply('Action effectuée.');
     } else if (args[0] === 'off') {
-      if (!server.unused.includes(args[1])) {
-        await server.unused.push(args[1]);
-        await server.save();
-      }
+      const data =
+        args[1] === 'all'
+          ? message.client.commands
+              .filter((c) => c.name !== 'toggle')
+              .map((c) => c.name)
+          : [...new Set([...server.unused, args[1]])];
+
+      await server.updateOne({
+        $set: {
+          unused: data,
+        },
+      });
       return message.reply(
         `La commande \`${args[1]}\` est désactivée sur ce serveur.`
       );
