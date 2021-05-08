@@ -19,8 +19,6 @@ module.exports = {
       currPrefix = currPrefix.symbol;
     }
 
-    console.log(`currPrefix`, currPrefix);
-
     if (!message.content.startsWith(currPrefix)) {
       if (updated) return -1;
       const hiddenCommand = client.hiddenCommands.find((cmd) =>
