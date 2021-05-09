@@ -1,5 +1,3 @@
-const JSONdb = require('simple-json-db');
-
 const moment = require('moment');
 const User = require('../../schemas/User');
 moment.locale('fr');
@@ -12,11 +10,9 @@ module.exports = {
   usage: '[@user]',
   guildOnly: true,
   execute: async (message, args) => {
-    const db = new JSONdb('./db/info.json');
-
     if (!args.length || !message.mentions.users.size) {
       const users = await User.find({ guilds: message.guild.id });
-      
+
       if (!users.length) return message.reply('Aucun utilisateur enregistré.');
       const reply = users.reduce((str, user) => {
         str +=
@@ -42,7 +38,7 @@ module.exports = {
     }
 
     const id = message.mentions.users.first().id;
-    const user = db.get(message.guild.id).users.find((user) => user.id === id);
+    const user = await User.findById(id);
     if (user) {
       message.reply(
         'Moui... on parle de ' +
