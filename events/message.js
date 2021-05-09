@@ -107,7 +107,7 @@ module.exports = {
       return message.reply("Cette commande n'est pas exécutable en DM !");
     }
 
-    if (server.unused.includes(command.name)) {
+    if (server && server.unused.includes(command.name)) {
       return message.reply('Cette commande est désactivée sur le serveur.');
     }
 
