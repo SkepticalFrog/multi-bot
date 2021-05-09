@@ -10,7 +10,8 @@ module.exports = {
       return message.reply('...Encore du travail ?');
     }
 
-    const rand = server.botreplies[Math.floor(Math.random() * server.botreplies.length)];
+    const rand =
+      server.botreplies[Math.floor(Math.random() * server.botreplies.length)];
     return message.reply(rand);
   },
 };
