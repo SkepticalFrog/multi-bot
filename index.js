@@ -10,6 +10,7 @@ const client = new Discord.Client({
 client.commands = new Discord.Collection();
 client.hiddenCommands = new Discord.Collection();
 client.cooldowns = new Discord.Collection();
+client.queues = new Discord.Collection();
 
 const eventFiles = fs
   .readdirSync('./events')
