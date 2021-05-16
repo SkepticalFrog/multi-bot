@@ -17,6 +17,9 @@ module.exports = {
       const embed = {
         color: 0x00cc22,
         title: 'Liste des utilisateurs enregistrés',
+        thumbnail: {
+          url: message.client.user.displayAvatarURL(),
+        },
         footer: { text: 'Powered by SkepticalFrog™' },
         fields: [
           users.map((user) => {
