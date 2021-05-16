@@ -1,6 +1,6 @@
 {
   "name": "guide-bot",
-  "version": "1.19.1",
+  "version": "1.19.2",
   "main": "index.js",
   "author": "Matt",
   "license": "MIT",
@@ -12,6 +12,7 @@
     "moment": "^2.29.1",
     "mongoose": "^5.12.7",
     "simple-json-db": "^1.2.3",
+    "youtube-v3-api": "^1.1.1",
     "ytdl-core": "^4.8.0"
   }
 }
