@@ -63,3 +63,5 @@ try {
   console.log(`[-] Error trying to connect to the database.\n`, err);
   process.exit(1);
 }
+
+console.log("Hello.")
